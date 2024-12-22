@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Automated Threat Detection</title>
+</head>
+<body>
+    <header>
+        <h1>Automated Threat Detection System</h1>
+    </header>
+
+    <div class="container">
+        <form id="threatForm">
+            <label for="logInput">Log Data Analysis:</label>
+            <textarea id="logInput" rows="4" placeholder="Please enter the log details, such as database interactions or errors..."></textarea>
+
+            <label for="strideCategory">Choose STRIDE Threat Category:</label>
+            <select id="strideCategory">
+                <option value="spoofing">Spoofing: Identity Deception</option>
+                <option value="tampering">Tampering: Data Integrity Violation</option>
+                <option value="repudiation">Repudiation: Denial of Actions</option>
+                <option value="informationDisclosure">Information Disclosure: Breach of Confidentiality</option>
+                <option value="denialOfService">Denial of Service: Resource Exhaustion</option>
+                <option value="elevationOfPrivilege">Elevation of Privilege: Unauthorized Access</option>
+            </select>
+
+            <label for="dreadScore">DREAD Risk Evaluation (1-10):</label>
+            <input id="dreadScore" type="number" min="1" max="10" placeholder="Rate the risk from 1 (low) to 10 (high)">
+
+            <button type="button" onclick="analyzeThreat()">Assess Threat Level</button>
+        </form>
+
+        <div class="output" id="outputContainer" style="display: none;">
+            <h3>Analysis Results</h3>
+            <p id="resultText"></p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
