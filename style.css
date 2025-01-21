@@ -110,6 +110,24 @@ button:hover {
     color: #004d40;
 }
 
+.bold {
+    font-weight: bold;
+}
+
+/* Tambahkan ke style.css */
+.score-low {
+    color: green;
+}
+
+.score-medium {
+    color: yellow;
+}
+
+.score-high {
+    color: red;
+}
+
+
 /* Media Query for responsiveness */
 @media (max-width: 600px) {
     .container {

@@ -1,65 +1,115 @@
+const threatCases = {
+    spoofing: [
+        "Penyerang menggunakan email palsu untuk meminta transfer dana.",
+        "Phishing yang mencuri kredensial login pengguna.",
+        "Memalsukan alamat IP untuk menyamar sebagai pengguna lain."
+    ],
+    tampering: [
+        "Modifikasi data transaksi tanpa izin.",
+        "Pemalsuan parameter URL untuk mengakses data sensitif.",
+        "Manipulasi file konfigurasi aplikasi."
+    ],
+    repudiation: [
+        "Pengguna menyangkal pengiriman formulir online.",
+        "Menghapus jejak log untuk menghindari pelacakan.",
+        "Mengklaim bahwa tindakan berbahaya tidak dilakukan."
+    ],
+    informationDisclosure: [
+        "Tereksposnya data sensitif melalui URL.",
+        "Akses tidak sah ke file laporan keuangan.",
+        "Penangkapan data dengan sniffing di jaringan publik."
+    ],
+    denialOfService: [
+        "Serangan DDoS membuat server tidak responsif.",
+        "Permintaan besar-besaran memperlambat sistem.",
+        "Blokir sumber daya yang memutus akses pengguna."
+    ],
+    elevationOfPrivilege: [
+        "Eksploitasi bug untuk akses admin.",
+        "Hak istimewa pengguna dinaikkan tanpa izin.",
+        "Manipulasi token untuk hak akses lebih tinggi."
+    ]
+};
+
+function updateThreatExamples() {
+    const selectedCategory = document.getElementById('strideCategory').value;
+    const caseContainer = document.getElementById('caseContainer');
+    const caseSelect = document.getElementById('caseSelect');
+    caseSelect.innerHTML = `<option value="" selected disabled>Pilih Kasus</option>`;  // reset opsi kasus
+
+    if (threatCases[selectedCategory]) {
+        threatCases[selectedCategory].forEach((caseText, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = `Kasus ${index + 1}: ${caseText}`;
+            caseSelect.appendChild(option);
+        });
+        document.getElementById('dreadScoresContainer').style.display = 'block';
+    } else {
+        caseContainer.innerHTML = 'Pilih kategori STRIDE untuk melihat contoh kasus.';
+        document.getElementById('dreadScoresContainer').style.display = 'none';
+    }
+}
+
+document.getElementById('strideCategory').addEventListener('change', updateThreatExamples);
+
 function analyzeThreat() {
     const logData = document.getElementById('logInput').value;
     const strideCategory = document.getElementById('strideCategory').value;
-    const dreadScore = document.getElementById('dreadScore').value;
+    const selectedCaseIndex = document.getElementById('caseSelect').value;
 
-    if (!logData || !dreadScore) {
+    const damageScore = document.getElementById('damageScore').value;
+    const reproducibilityScore = document.getElementById('reproducibilityScore').value;
+    const exploitabilityScore = document.getElementById('exploitabilityScore').value;
+    const affectedUsersScore = document.getElementById('affectedUsersScore').value;
+    const discoverabilityScore = document.getElementById('discoverabilityScore').value;
+
+    if (!strideCategory || selectedCaseIndex === null || !damageScore || !reproducibilityScore || !exploitabilityScore || !affectedUsersScore || !discoverabilityScore) {
         alert('Harap isi semua kolom untuk melanjutkan analisis.');
         return;
     }
 
-    const outputContainer = document.getElementById('outputContainer');
-    const resultText = document.getElementById('resultText');
+    const selectedCase = threatCases[strideCategory][selectedCaseIndex];
 
-    // Tentukan warna dan pesan berdasarkan skor DREAD
-    let riskColor, riskLevelMessage, specificAction;
+    const totalDreadScore = parseInt(damageScore) + parseInt(reproducibilityScore) + parseInt(exploitabilityScore) +
+        parseInt(affectedUsersScore) + parseInt(discoverabilityScore);
 
-    // Tentukan tindakan spesifik berdasarkan kategori STRIDE
-    switch (strideCategory) {
-        case 'spoofing':
-            specificAction = "Periksa autentikasi dan otorisasi untuk memastikan tidak ada identitas palsu yang digunakan. Pastikan sistem menggunakan mekanisme autentikasi yang kuat.";
-            break;
-        case 'tampering':
-            specificAction = "Periksa log untuk setiap perubahan yang tidak sah dalam data dan lakukan audit keamanan. Terapkan kontrol integritas data yang lebih ketat.";
-            break;
-        case 'repudiation':
-            specificAction = "Pastikan sistem memiliki catatan log yang tidak dapat dimanipulasi. Terapkan audit trail untuk setiap transaksi.";
-            break;
-        case 'informationDisclosure':
-            specificAction = "Periksa apakah ada data sensitif yang terbuka. Enkripsi data di repositori dan selama transmisi untuk melindungi kerahasiaan.";
-            break;
-        case 'denialOfService':
-            specificAction = "Periksa apakah server Anda dibanjiri permintaan yang berlebihan. Implementasikan batasan dan perlindungan dari serangan DDoS.";
-            break;
-        case 'elevationOfPrivilege':
-            specificAction = "Periksa hak akses pengguna dan pastikan tidak ada pengguna yang mendapatkan hak lebih dari yang seharusnya. Terapkan prinsip least privilege.";
-            break;
-        default:
-            specificAction = "Kategori STRIDE tidak terdeteksi. Pastikan kategori yang dipilih benar.";
-            break;
-    }
+    // Fungsi untuk menentukan warna dan deskripsi berdasarkan total skor
+    function getScoreColorAndText(score) {
+        let color, scoreText;
+        if (score >= 1 && score <= 15) {
+            color = 'score-low';   // Skor Rendah
+            scoreText = 'Skor Rendah';
+        } else if (score >= 16 && score <= 30) {
+            color = 'score-medium'; // Skor Sedang
+            scoreText = 'Skor Sedang';
+        } else if (score >= 31 && score <= 45) { 
+            color = 'score-high';   // Skor Tinggi
+            scoreText = 'Skor Tinggi';
+        } else {
+            color = 'score-low'; // Default ke Skor Rendah jika tidak masuk rentang
+            scoreText = 'Skor Rendah';
+        }
+        return { color, scoreText };
+    }    
+    
+    const { color, scoreText } = getScoreColorAndText(totalDreadScore);
 
-    // Tentukan warna dan level risiko berdasarkan nilai DREAD
-    if (dreadScore >= 1 && dreadScore <= 3) {
-        riskColor = "green"; // Risiko rendah
-        riskLevelMessage = "Risiko Rendah - Tidak Ada Tindakan Segera yang Dibutuhkan.";
-    } else if (dreadScore >= 4 && dreadScore <= 7) {
-        riskColor = "yellow"; // Risiko sedang
-        riskLevelMessage = "Risiko Sedang - Pemantauan dan Penilaian Lanjutan Diperlukan.";
-    } else if (dreadScore >= 8 && dreadScore <= 10) {
-        riskColor = "red"; // Risiko tinggi
-        riskLevelMessage = "Risiko Tinggi - Tindakan Segera Diperlukan.";
-    } else {
-        alert('Harap masukkan skor DREAD yang valid antara 1 hingga 10.');
-        return;
-    }
+    const specificAction = {
+        spoofing: "Periksa autentikasi yang kuat untuk mencegah penyamaran.",
+        tampering: "Implementasikan tanda tangan digital untuk memastikan integritas data.",
+        repudiation: "Gunakan log audit yang tidak dapat dimodifikasi.",
+        informationDisclosure: "Enkripsi data sensitif dalam transmisi.",
+        denialOfService: "Gunakan pemantauan untuk mendeteksi dan membatasi serangan DDoS.",
+        elevationOfPrivilege: "Periksa hak akses pengguna dan tambahkan kontrol keamanan yang ketat."
+    };
 
-    // Update output dengan warna yang sesuai dan rekomendasi tindakan
-    resultText.innerHTML = `Log Data: <strong>${logData}</strong><br>
-                            STRIDE Category: <strong>${strideCategory}</strong><br>
-                            DREAD Score: <strong>${dreadScore}</strong><br>
-                            <strong>Tindakan yang Disarankan:</strong> <span style="color: ${riskColor}; font-weight: bold;">${riskLevelMessage}</span><br>
-                            <strong>Tindakan Spesifik: </strong> ${specificAction}`;
+    document.getElementById('resultText').innerHTML = `
+<span class="bold">Log:</span> ${logData}<br>
+<span class="bold">Kasus:</span> ${selectedCase}<br>
+<span class="bold">STRIDE Kategori:</span> ${strideCategory}<br>
+<span class="bold ${color}">Total Skor DREAD: ${totalDreadScore} (${scoreText})</span><br>
+<span class="bold">Tindakan yang Disarankan:</span> ${specificAction[strideCategory]}`;
 
-    outputContainer.style.display = 'block';
+    document.getElementById('outputContainer').style.display = 'block';
 }

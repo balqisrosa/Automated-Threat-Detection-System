@@ -1,42 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Automated Threat Detection</title>
+    <title>Sistem Deteksi Ancaman Otomatis</title>
 </head>
+
 <body>
+
     <header>
-        <h1>Automated Threat Detection System</h1>
+        <h1>Sistem Deteksi Ancaman Otomatis</h1>
     </header>
 
     <div class="container">
         <form id="threatForm">
-            <label for="logInput">Log Data Analysis:</label>
-            <textarea id="logInput" rows="4" placeholder="Please enter the log details, such as database interactions or errors..."></textarea>
-
-            <label for="strideCategory">Choose STRIDE Threat Category:</label>
-            <select id="strideCategory">
-                <option value="spoofing">Spoofing: Identity Deception</option>
-                <option value="tampering">Tampering: Data Integrity Violation</option>
-                <option value="repudiation">Repudiation: Denial of Actions</option>
-                <option value="informationDisclosure">Information Disclosure: Breach of Confidentiality</option>
-                <option value="denialOfService">Denial of Service: Resource Exhaustion</option>
-                <option value="elevationOfPrivilege">Elevation of Privilege: Unauthorized Access</option>
+            <label for="logInput">Pilih Data Log:</label>
+            <select id="logInput">
+                <option value="Percobaan login dari IP yang tidak dikenal">Percobaan login dari IP yang tidak dikenal
+                </option>
+                <option value="Akses tidak sah ke panel admin">Akses tidak sah ke panel admin</option>
+                <option value="Modifikasi data keuangan">Modifikasi data keuangan</option>
             </select>
 
-            <label for="dreadScore">DREAD Risk Evaluation (1-10):</label>
-            <input id="dreadScore" type="number" min="1" max="10" placeholder="Rate the risk from 1 (low) to 10 (high)">
+            <label for="strideCategory">Pilih Kategori STRIDE:</label>
+            <select id="strideCategory">
+                <option value="" selected disabled>Pilih Kategori</option>
+                <option value="spoofing">Spoofing</option>
+                <option value="tampering">Tampering</option>
+                <option value="repudiation">Repudiation</option>
+                <option value="informationDisclosure">Information Disclosure</option>
+                <option value="denialOfService">Denial of Service</option>
+                <option value="elevationOfPrivilege">Elevation of Privilege</option>
+            </select>
 
-            <button type="button" onclick="analyzeThreat()">Assess Threat Level</button>
+            <div class="form-group" id="caseContainer">
+                Pilih kategori STRIDE untuk melihat contoh kasus.
+            </div>
+
+            <div class="form-group">
+                <label for="caseSelect">Pilih Contoh Kasus:</label>
+                <select id="caseSelect">
+                    <option value="" selected disabled>Pilih Kasus</option>
+                </select>
+            </div>
+
+            <div id="dreadScoresContainer">
+                <h3>Masukkan Skor DREAD:</h3>
+                <div class="form-group">
+                    <label for="damageScore">Damage (Kerusakan):</label>
+                    <input type="number" id="damageScore" min="1" max="10">
+                </div>
+                <div class="form-group">
+                    <label for="reproducibilityScore">Reproducibility (Kemudahan Pengulangan):</label>
+                    <input type="number" id="reproducibilityScore" min="1" max="10">
+                </div>
+                <div class="form-group">
+                    <label for="exploitabilityScore">Exploitability (Kemudahan Eksploitasi):</label>
+                    <input type="number" id="exploitabilityScore" min="1" max="10">
+                </div>
+                <div class="form-group">
+                    <label for="affectedUsersScore">Affected Users (Pengguna yang Terpengaruh):</label>
+                    <input type="number" id="affectedUsersScore" min="1" max="10">
+                </div>
+                <div class="form-group">
+                    <label for="discoverabilityScore">Discoverability (Kemudahan Ditemukan):</label>
+                    <input type="number" id="discoverabilityScore" min="1" max="10">
+                </div>
+            </div>
+
+            <button type="button" onclick="analyzeThreat()">Analisis</button>
         </form>
 
-        <div class="output" id="outputContainer" style="display: none;">
-            <h3>Analysis Results</h3>
+        <!-- Menyembunyikan container output secara default -->
+        <div id="outputContainer" style="display: none;">
+            <h2>Hasil Analisis</h2>
             <p id="resultText"></p>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
+
 </html>
